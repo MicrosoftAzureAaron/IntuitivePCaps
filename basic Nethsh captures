@@ -1,0 +1,16 @@
+# Please specify how long you want the capture to run
+$totalTimeInHours = 24
+$totalTimeInSeconds = $totalTimeInHours * 3600
+# Specify how often you want to stop the capture and start a new one
+$cadenceOfCapturesInSeconds = 3600
+$currentCount = 0
+# This will ensure the capture does not run for longer than desired
+$maxCount = $totalTimeInSeconds / $cadenceOfCapturesInSeconds
+while ($currentCount -lt $maxCount) {
+    # Fix the $Logfile for the correct path
+    # $Logfile = "C:\Users\$env:USERNAME\Desktop\Trace_$(Get-Date -Format HH-mm_dd-MM-yyyy).etl"
+    netsh trace start capture=yes report=disabled filemode=single maxSize=2048 PacketTruncateBytes=100 tracefile=$Logfile
+    Start-Sleep -Seconds $cadenceOfCapturesInSeconds
+    netsh trace stop
+    $currentCount = $currentCount + 1
+}
