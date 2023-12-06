@@ -1,0 +1,30 @@
+from scapy.all import IP, TCP, sr1 
+from time import sleep 
+target_ip = "192.168.1.105" 
+ports = [135, 3389, 445] 
+duration = 120 # 2 minutes 
+interval = 15 # seconds 
+end_time = time.time() + duration 
+
+while time.time() < end_time: 
+    for port in ports: 
+      packet = IP(dst=target_ip) / TCP(dport=port, flags="S") # SYN packet 
+      response = sr1(packet, timeout=1, verbose=0) 
+      if response and response.haslayer(TCP) and response[TCP].flags == 0x12:
+          print(f"Port {port} open") 
+      else: print(f"Port {port} closed") 
+    sleep(interval)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
